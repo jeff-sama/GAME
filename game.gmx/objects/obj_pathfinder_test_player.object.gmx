@@ -25,47 +25,29 @@
         <arguments>
           <argument>
             <kind>1</kind>
-            <string>global.gamefreeze = false;
-global.firedirection = 0;
+            <string>sprite_index = playerred;
+image_speed = 0;
+//x and y values to pathfind to
+go_y = 0;
+go_x = 0;
+go_speed = 0; //speed to pathfind at
+go_allowdiag = 0;
 
-//Inputs
-global.input[0] = 1; // 1 = mb_left
-global.input[1] = 2; // 2 = mb_right
-global.input[2] = 3; // 3 = mouse_wheel_up
-global.input[3] = 4; // 4 = mouse_wheel_down
-global.input[4] = 5; // 5 = vk_shift
-global.input[5] = '1';
-global.input[6] = '2';
-global.input[7] = '3';
-global.input[8] = '4';
-global.input[9] = 6; // 6 = vk_space
-global.input[10] = 0;
-global.input[11] = 0;
-global.input[12] = 0;
+pathfind_allowdiag = 1;
 
-global.direction_input[0] = 'W';
-global.direction_input[1] = 'S';
-global.direction_input[2] = 'A';
-global.direction_input[3] = 'D';
+posx = x; //if more than 10 away from these coordinates, will pathfind
+posy = y;
 
-//grid and pathing
-globalvar grid;
-grid = mp_grid_create(0,0,room_width/32,room_height/32,32,32) //MOVE THIS TO ROOM OBJECTS LATER
+onpath = false;
+pathfind_x = x+32; //coordinates to use for the origin of the path
+pathfind_y = x+32;
 
-//audio
-audio_channel_num(128);
-audio_play_sound(mus_01,10,1); //play bg music
-
-//pause shader variables
-uni_resolution_hoz = shader_get_uniform(shd_gaussian_horizontal,"resolution");
-uni_resolution_vert = shader_get_uniform(shd_gaussian_vertical,"resolution");
-var_resolution_x = view_wview;
-var_resolution_y = view_hview;
-shader_enabled = false;
-pause_surface = surface_create(view_wview,view_hview);
-
-
-
+/* KNOWN PROBLEMS
+1. Grid must be 64x64 for player to reliably move through it
+2. Wallbits can be smaller than 64x64 so the pathfinding object will stay unnecessarily far away from some walls
+3. Path must begin at the origin of the sprite for some reason (x,y). If I try setting it to say (x+32,y+32), things get fucky
+4. Attempting to pathfind into a wall teleports the pathfinding object to 0,0.
+*/
 
 </string>
           </argument>
@@ -89,52 +71,25 @@ pause_surface = surface_create(view_wview,view_hview);
         <arguments>
           <argument>
             <kind>1</kind>
-            <string>if (party.active.x+32-600 &gt; 0) view_xview[0] = party.active.x+32-600;
-if (party.active.y+32-360 &gt; 0) view_yview[0] = party.active.y+32-360;
-</string>
-          </argument>
-        </arguments>
-      </action>
-    </event>
-    <event eventtype="8" enumb="64">
-      <action>
-        <libid>1</libid>
-        <id>603</id>
-        <kind>7</kind>
-        <userelative>0</userelative>
-        <isquestion>0</isquestion>
-        <useapplyto>-1</useapplyto>
-        <exetype>2</exetype>
-        <functionname></functionname>
-        <codestring></codestring>
-        <whoName>self</whoName>
-        <relative>0</relative>
-        <isnot>0</isnot>
-        <arguments>
-          <argument>
-            <kind>1</kind>
             <string>
-//Pause shader (blur)
-//Do horizontal blur first
-surface_set_target(pause_surface);
-if shader_enabled shader_set(shd_gaussian_horizontal);
-    shader_set_uniform_f(uni_resolution_hoz, var_resolution_x, var_resolution_y);
-    draw_surface(application_surface,0,0);
-shader_reset();
-surface_reset_target();
+depth = -y;
+pathfind_x = x+32;
+pathfind_y = y+32;
 
-//Do vertical blur last
-if shader_enabled shader_set(shd_gaussian_vertical);
-    shader_set_uniform_f(uni_resolution_vert, var_resolution_x, var_resolution_y);
-    draw_surface(pause_surface,0,0);
-shader_reset();
-//END PAUSE SHADER-------
+if (x-10 &gt; posx || x+10 &lt; posx || y-10 &gt; posy || y+10 &lt; posy){
+    pathfind(posx,posy,6,pathfind_allowdiag);
+    onpath = true;
+}
+else{
+    onpath = false;
+    pathfind_allowdiag = 1;
+}
 </string>
           </argument>
         </arguments>
       </action>
     </event>
-    <event eventtype="9" enumb="27">
+    <event eventtype="4" ename="obj_boundary">
       <action>
         <libid>1</libid>
         <id>603</id>
@@ -151,7 +106,34 @@ shader_reset();
         <arguments>
           <argument>
             <kind>1</kind>
-            <string>pause(); //pause script
+            <string>// DESCRIPTION: Solves strange collision issues when landing or walking into a solid (ground or wall) for platformers
+// CREDIT:  cantavanda @ gmc.yoyogames.com
+// URL: http://gmc.yoyogames.com/index.php?showtopic=545531
+// USE: Apply this script in Player -&gt; Collides With -&gt; Solid event
+ 
+//CODE: 
+ 
+if (!place_free(x+hspeed,y))
+{
+    if (hspeed&lt;=0){move_contact_solid(180,abs(hspeed));}
+    if (hspeed&gt;0){move_contact_solid(0,abs(hspeed));}
+    hspeed=0;
+    pathfind_allowdiag = 0; //for pathfinding, if a wall is touched can no longer move diagonal until away from wall
+}
+  
+if (!place_free(x,y+vspeed))
+{
+    if (vspeed&lt;=0){move_contact_solid(90,abs(vspeed));}
+    if (vspeed&gt;0){move_contact_solid(270,abs(vspeed));}
+    vspeed=0;
+    pathfind_allowdiag = 0;
+}
+ 
+if (!place_free(x+hspeed,y+vspeed))
+{
+    hspeed=0;
+    pathfind_allowdiag = 0;
+}
 </string>
           </argument>
         </arguments>

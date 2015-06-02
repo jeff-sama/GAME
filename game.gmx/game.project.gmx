@@ -80,6 +80,7 @@
       <object>objects\obj_pausemenu</object>
     </objects>
     <object>objects\obj_pathfinder_test</object>
+    <object>objects\obj_pathfinder_test_player</object>
   </objects>
   <rooms name="rooms">
     <room>rooms\room0</room>
