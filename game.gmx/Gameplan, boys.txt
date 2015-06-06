@@ -1,0 +1,66 @@
+Here is a general outline for the (as of yet unnamed) game:
+
+	* = Things I'd like to see in the game, but not necessary (basically, we'll do it if we feel like it)
+
+	-Game will be divided into "chapters", each of which will contain three stages, with the final stage containing a boss of some sort
+		-Each chapter will have it's own unique locale and enemy types. (Ex. Research Laboratory, High Security Prison, Seaworld)
+		-After each chapter will be a single stage connecting one locale to another.
+		-The player will begin with only one party member (Fan), but as the game progresses will obtain the others
+		-At this point I'm unsure how many chapters or stages we will do, will be decided as development progresses
+		*-Secret Stages
+
+	-Game will feature "run and gun" shoot-em-up gameplay.
+		-Primary weapons will be guns, but players can obtain other types of weapons and items to be used.
+		-Each party member can hold two weapons (or items) at once. The left and right mousebuttons are used to fire the two.
+		-Party members can be switched by using the mousewheel. (If this is too weird number keys will be used instead)
+		-All party members can be seen on screen following the "active" party member, which will be the one in control by the player.
+		-Only the active party member will take damage from enemies. (Alternatively all party members will take damage, with the active player taking more)
+		-When a party member dies, they will lay down where they died until revived.
+		*-Each party member will have a unique ability accessed with the spacebar.
+		-Status effects such as poison, blindness, etc.
+
+	-Game will feature an inventory system
+		-This can be accessed at the level select screen and via the pause menu.
+		-Will allow the customization of players with different guns and items.
+		-Items can be found laying on the ground in the levels, and will drop off of enemies
+		*-Possibly will add a money system and a shop for items.
+	
+	-TYPES OF WEAPONS
+		-Assault Rifles (fire multiple rounds in a line)
+		-Shotuns	(fire multiple rounds in a spread)
+		-Pistols/Sniper Rifles (fire single round)
+		*-RPG		(fires single rocket, explosive radius)
+		*-Beam or Laser gun (fires single beam, possibly bounces off of walls)
+		*-Throwing weapon 	(grenade, shuriken, hadouken, etc)
+
+	-TYPES OF ITEMS
+		-Revive  (restore fallen party member to life with some health)
+		-Bandage (restore health)
+		-Antidote (cures poison or blindness)
+		*-Bomb 	(it's a bomb, boom)
+		-level-dependent items such as keys and things
+
+	-Environments
+		-Doors! (Open when stood near, cannot be shot through when closed)
+		*-Destructable walls
+
+	-Enemy AI
+		-If player is spotted, enemies will attempt to move to a point near the player where they have a line of sight on the player to shoot
+		-If enemy uses melee, will attempt to move up to player and hit them.
+		-Bosses will have varied abilities.
+
+	-Art Style!
+		-Pixely (yeah, I know)
+		-Surrealish future setting
+		-Cyberpunk?
+		-V A P O R W A V E
+		- A E S T H E T I C
+
+Brandon is currently working on pathfinding, good goy
+Jeff is doing UI things and slacking off
+Chris is on call for sprites
+So is Keon I guess
+
+	
+Will probably update this later. (Also, suggestions for names are good)
+	
